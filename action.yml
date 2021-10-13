@@ -1,40 +1,41 @@
 name: Build Search Index And Meta Data
+description: Builds the lunr idx object and the meta data files from website HTML files
 
-on:
-  workflow_call:
-    inputs:
-      parameter_file_path:
-        required: true
-        type: string
+inputs:
+  parameter_file_path:
+    required: true
+    description: The path to the JSON file holding build parameters
+    default: "./search_bar.json"
 
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
 
-jobs:
-  build_search_index_and_meta_data:
-    name: Build Search Index And Meta Data
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      - run: |
-        pip3 install -r ./requirements.txt
-        python3 generate_search_index.py {{ inputs.parameter_file_path }}
-        python3 generate_search_metadata.py {{ inputs.parameter_file_path }}
+    - shell: bash
+      run: |
+      pip3 install -r ./requirements.txt
+      python3 generate_search_index.py {{ inputs.parameter_file_path }}
+      python3 generate_search_metadata.py {{ inputs.parameter_file_path }}
 
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-          cache: 'npm'
-      - run: node build_ticket_index.js {{ inputs.parameter_file_path }}
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: 'npm'
 
-      - name: Commit These Files
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git reset ./documents.json
-          git commit -m "generated"
-          git push
+    - shell: bash
+      run: node build_ticket_index.js {{ inputs.parameter_file_path }}
+
+    - shell: bash
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        git reset ./documents.json
+        git commit -m "generated"
+        git push
 
