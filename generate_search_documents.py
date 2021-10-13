@@ -31,7 +31,7 @@ def soup_to_dict(soup: BeautifulSoup, key_tags: list) -> dict:
 
     # Iterate through the key_tags in order of precedence stripping out their content into the doc
     for key_tags_pair in key_tags:
-        key, values = key_tags_pair.items()
+        key, values = key_tags_pair.items()[0]
 
         page[key] = []
 
