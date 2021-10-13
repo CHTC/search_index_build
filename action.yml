@@ -18,7 +18,7 @@ runs:
 
     - shell: bash
       run: |
-        pip3 install -r ./requirements.txt
+        pip3 install -r requirements.txt
         python3 generate_search_index.py {{ inputs.parameter_file_path }}
         python3 generate_search_metadata.py {{ inputs.parameter_file_path }}
 
