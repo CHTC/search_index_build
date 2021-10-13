@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-python@v2
         with:
           python-version: '3.x'
-
       - run: |
         pip3 install -r ./requirements.txt
         python3 generate_search_index.py {{ inputs.parameter_file_path }}
@@ -27,5 +27,14 @@ jobs:
         with:
           node-version: '14'
           cache: 'npm'
-
       - run: node build_ticket_index.js {{ inputs.parameter_file_path }}
+
+      - name: Commit These Files
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git reset ./documents.json
+          git commit -m "generated"
+          git push
+
