@@ -70,11 +70,17 @@ def generate_search_metadata(site_root_dir: str, output_dir: str, exclude_paths:
 
 
 def main():
-    site_root_dir = sys.argv[1]
-    exclude_paths = json.loads(sys.argv[2])
-    output_dir = sys.argv[3]
+    """
+    Open the args file and begin the generation
+    """
+    with open(sys.argv[1], "r") as fp:
+        args = json.load(fp)
 
-    generate_search_metadata(site_root_dir, exclude_paths, output_dir)
+    site_root = args.site_root
+    exclude_paths = args.exclude_paths
+    output_dir = args.meta_data_output
+
+    generate_search_metadata(site_root, exclude_paths, output_dir)
 
 
 if __name__ == '__main__':

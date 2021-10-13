@@ -3,20 +3,8 @@ name: Build Search Index And Meta Data
 on:
   workflow_call:
     inputs:
-      site_root:
+      parameter_file_path:
         required: true
-        type: string
-      exclude_paths:
-        required: false
-        type: string
-      meta_data_output:
-        required: true
-        type: string
-      index_output:
-        required: true
-        type: string
-      key_tags:
-        required: false
         type: string
 
 
@@ -32,12 +20,12 @@ jobs:
 
       - run: |
         pip3 install -r ./requirements.txt
-        python3 generate_search_index.py {{ inputs.site_root }} {{ inputs.exclude_paths }} {{ inputs.key_tags }}
-        python3 generate_search_metadata.py {{ inputs.site_root }} {{ inputs.exclude_paths }} {{ inputs.meta_data_output }}
+        python3 generate_search_index.py {{ inputs.parameter_file_path }}
+        python3 generate_search_metadata.py {{ inputs.parameter_file_path }}
 
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
           cache: 'npm'
 
-      - run: echo "$(cat ./search_json.json)" | node build_ticket_index.js {{ inputs.fields }} > {{ inputs.index_output }}
+      - run: node build_ticket_index.js {{ inputs.parameter_file_path }}

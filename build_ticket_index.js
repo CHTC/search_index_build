@@ -1,63 +1,51 @@
-// Generate idx using command at root:
-// echo "$(cat assets/data/search_documents/ticket_search.json)" | node assets/js/build_ticket_index.js > assets/data/search_indexes/ticket_index.json
+// Generates the serialized idx object that runs the search bar
+// Based on the Lunr build process https://lunrjs.com/guides/index_prebuilding.html
 //
-// ticket_search.json contains the json of just space delimited text that occurs in the ticket organized by category
+// Assumes documents are at ./documents.json
 
-var lunr = require('lunr'),
-    stdin = process.stdin,
-    stdout = process.stdout,
-    buffer = []
+const fs = require('fs')
+const lunr = require('lunr')
 
-stdin.resume()
-stdin.setEncoding('utf8')
+// Read in the JSON that contains the index arguments and set them
+let args = {}
+try {
+    args = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'))
+} catch (err) {
+    console.error(err)
+}
+let ref = args.ref
+let fields = args.fields
+let index_output = args.index_output
 
-stdin.on('data', function (data) {
-    buffer.push(data)
+// Read in the documents that compose the content to be indexed
+let documents = []
+try {
+    documents = JSON.parse(fs.readFileSync("./documents.json", 'utf8'))
+} catch (err) {
+    console.error(err)
+}
+
+// Build the lunr idx object https://lunrjs.com/guides/getting_started.html#creating-an-index
+let idx = lunr(function () {
+    this.ref(ref)
+    fields.forEach(function(field){
+        if("boost" in field){
+            this.field(field.id, field.boost)
+        } else {
+            this.field(field.id)
+        }
+    }, this)
+
+    documents.forEach(function (doc) {
+        this.add(doc)
+    }, this)
 })
 
-stdin.on('end', function () {
-    var documents = JSON.parse(buffer.join(''))
-    var ref = process.argv[3]
-    var fields = JSON.parse(process.argv[4])
-
-    var idx = lunr(function () {
-        this.ref(ref)
-        fields.forEach(function(field){
-            if("boost" in field){
-                this.field(field.id, field.boost)
-            } else {
-                this.field(field.id)
-            }
-        })
-
-        this.field("id")
-        this.field("title")
-        this.field("remarks")
-        this.field("type")
-        this.field("status")
-        this.field("fixed_version")
-        this.field("priority")
-        this.field("assigned_to")
-        this.field("creator")
-        this.field("customer_group")
-        this.field("notify")
-        this.field("last_change")
-        this.field("created")
-        this.field("broken_version")
-        this.field("subsystem")
-        this.field("derived_from")
-        this.field("rust")
-        this.field("visibility")
-        this.field("due_date")
-        this.field("description")
-        this.field("derived_tickets")
-        this.field("check_ins")
-        this.field("attachments")
-
-        documents.forEach(function (doc) {
-            this.add(doc)
-        }, this)
-    })
-
-    stdout.write(JSON.stringify(idx))
+// Write the file out
+fs.writeFile(index_output, JSON.stringify(idx), err => {
+    if (err) {
+        console.error(err)
+        return
+    }
+    //file written successfully
 })

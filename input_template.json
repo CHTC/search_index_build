@@ -1,0 +1,9 @@
+{
+  "site_root" : "/path/to/root",
+  "exclude_paths" : ["excluded_path/**"],
+  "meta_data_output": "",
+  "index_output": "",
+  "key_tags" : [{"key" : ["tag0", "tag1"]}],
+  "ref" : "",
+  "fields" : []
+}

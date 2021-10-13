@@ -5,6 +5,11 @@ import sys
 
 
 def clean_term(term: str):
+    """
+    Can be used to clean the term
+    :param term: The term to clean
+    :return: The clean term
+    """
     return term
 
 
@@ -22,9 +27,12 @@ def soup_to_dict(soup: BeautifulSoup, key_tags: list) -> dict:
     """
 
     page = {}
-    page['root_relative_url'] = soup.root_relative_url
+    page['root_relative_url'] = soup.root_relative_url  # Set this to use as the ref later
 
-    for key, values in key_tags:
+    # Iterate through the key_tags in order of precedence stripping out their content into the doc
+    for key_tags_pair in key_tags:
+        key, values = key_tags_pair.items()
+
         page[key] = []
 
         for value in values:
@@ -39,11 +47,14 @@ def soup_to_dict(soup: BeautifulSoup, key_tags: list) -> dict:
 
         page[key] = " ".join(page[key])
 
+    # Put the remaining content into a base 'content' section
     try:
+        # Try to just extract just the main content if possible
         page['content'] = " ".join(soup.find("main").get_text().split())
 
     except:
         try:
+            # Fallback on getting all the pages text
             page['content'] = " ".join(soup.get_text().split())
         except:
             pass
@@ -72,15 +83,22 @@ def generate_search_json(site_root_dir: str, exclude_paths: list, output_dir: st
     dicts = [soup_to_dict(soup, key_tags) for soup in soups]
     search_json = json.dumps(dicts)
 
-    string_to_file("./search_json.json", search_json)
+    string_to_file(output_dir, search_json)
 
 
 def main():
-    site_root_dir = sys.argv[1]
-    exclude_paths = json.loads(sys.argv[2])
-    key_tags = json.loads(sys.argv[4])
+    """
+    Open the args file and begin the generation
+    """
+    with open(sys.argv[1], "r") as fp:
+        args = json.load(fp)
 
-    generate_search_json(site_root_dir, exclude_paths, key_tags)
+    site_root = args.site_root
+    exclude_paths = args.exclude_paths
+    output_dir = "./documents.json"
+    key_tags = args.key_tags
+
+    generate_search_json(site_root, exclude_paths, output_dir, key_tags)
 
 
 if __name__ == '__main__':
