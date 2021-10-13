@@ -80,7 +80,7 @@ def main():
     exclude_paths = args["exclude_paths"]
     output_dir = args["meta_data_output"]
 
-    generate_search_metadata(site_root, exclude_paths, output_dir)
+    generate_search_metadata(site_root, output_dir, exclude_paths)
 
 
 if __name__ == '__main__':
