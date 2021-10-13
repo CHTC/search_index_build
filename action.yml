@@ -24,8 +24,8 @@ runs:
     - shell: bash
       run: |
         pip3 install -r ${{ github.action_path }}/requirements.txt
-        python3 ${{ github.action_path }}/generate_search_documents.py {{ inputs.parameter_file_path }}
-        python3 ${{ github.action_path }}/generate_search_metadata.py {{ inputs.parameter_file_path }}
+        python3 ${{ github.action_path }}/generate_search_documents.py ${{ inputs.parameter_file_path }}
+        python3 ${{ github.action_path }}/generate_search_metadata.py ${{ inputs.parameter_file_path }}
 
     - uses: actions/setup-node@v2
       with:
@@ -33,7 +33,7 @@ runs:
         cache: 'npm'
 
     - shell: bash
-      run: node build_ticket_index.js {{ inputs.parameter_file_path }}
+      run: node build_ticket_index.js ${{ inputs.parameter_file_path }}
 
     - shell: bash
       run: |
