@@ -76,9 +76,9 @@ def main():
     with open(sys.argv[1], "r") as fp:
         args = json.load(fp)
 
-    site_root = args.site_root
-    exclude_paths = args.exclude_paths
-    output_dir = args.meta_data_output
+    site_root = args["site_root"]
+    exclude_paths = args["args.exclude_paths"]
+    output_dir = args["meta_data_output"]
 
     generate_search_metadata(site_root, exclude_paths, output_dir)
 

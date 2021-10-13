@@ -93,10 +93,10 @@ def main():
     with open(sys.argv[1], "r") as fp:
         args = json.load(fp)
 
-    site_root = args.site_root
-    exclude_paths = args.exclude_paths
+    site_root = args["site_root"]
+    exclude_paths = args["exclude_paths"]
     output_dir = "./documents.json"
-    key_tags = args.key_tags
+    key_tags = args["key_tags"]
 
     generate_search_json(site_root, exclude_paths, output_dir, key_tags)
 
