@@ -24,7 +24,7 @@ runs:
     - shell: bash
       run: |
         pip3 install -r ${{ github.action_path }}/requirements.txt
-        python3 ${{ github.action_path }}/generate_search_index.py {{ inputs.parameter_file_path }}
+        python3 ${{ github.action_path }}/generate_search_documents.py {{ inputs.parameter_file_path }}
         python3 ${{ github.action_path }}/generate_search_metadata.py {{ inputs.parameter_file_path }}
 
     - uses: actions/setup-node@v2
