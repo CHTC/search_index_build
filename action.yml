@@ -7,27 +7,30 @@ on:
         required: true
         type: string
 
-runs:
-  using: composite
-  steps:
-    - uses: actions/checkout@v2
 
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - run: |
+jobs:
+  build_search_index_and_meta_data:
+    name: Build Search Index And Meta Data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - run: |
         pip3 install -r ./requirements.txt
         python3 generate_search_index.py {{ inputs.parameter_file_path }}
         python3 generate_search_metadata.py {{ inputs.parameter_file_path }}
 
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-        cache: 'npm'
-    - run: node build_ticket_index.js {{ inputs.parameter_file_path }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'npm'
+      - run: node build_ticket_index.js {{ inputs.parameter_file_path }}
 
-    - name: Commit These Files
-      run: |
+      - name: Commit These Files
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
