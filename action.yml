@@ -33,7 +33,7 @@ runs:
 
     - shell: bash
       run: |
-        npm install lunr
+        npm install -g lunr
         node ${{ github.action_path }}/build_ticket_index.js ${{ inputs.parameter_file_path }}
 
     - shell: bash
