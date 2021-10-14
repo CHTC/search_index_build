@@ -1,3 +1,5 @@
+import os
+
 from bs4 import BeautifulSoup
 import json
 from util import path_to_soup, get_valid_paths, get_root_relative_url, string_to_file
