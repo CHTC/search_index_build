@@ -30,8 +30,6 @@ runs:
     - uses: actions/setup-node@v2
       with:
         node-version: '14'
-        cache: 'npm'
-        cache-dependency-path: ${{ github.action_path }}/package-lock.json
 
     - shell: bash
       run: |
