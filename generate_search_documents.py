@@ -193,6 +193,7 @@ def generate_search_json(exclude_paths: list, key_tags: list):
     """
 
     valid_paths = get_valid_paths(site_root_dir, exclude_paths)
+    print(valid_paths)
 
     soups = [path_to_soup_ext(path) for path in valid_paths]
     documents = [soup_to_dict(soup, key_tags) for soup in soups]
