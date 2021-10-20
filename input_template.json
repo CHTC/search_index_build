@@ -1,9 +1,11 @@
 {
-  "site_root" : "/path/to/root",
-  "exclude_paths" : ["excluded_path/**"],
-  "meta_data_output": "",
-  "index_output": "",
-  "key_tags" : [{"key" : ["tag0", "tag1"]}],
-  "ref" : "",
-  "fields" : []
+  "site_root" : "/Users/clock/WebstormProjects/htcondor-web/_site",
+  "exclude_paths" : [""],
+  "meta_data_output": "./throw-away",
+  "index_output": "./throw-away_index",
+  "key_tags" : [{"high" : ["h1", "h2", "h3", "h4", "h5"]}, {"medium" : ["b", "code", "pre"]}],
+  "ref" : "root_relative_url",
+  "fields" : [{"id": "root_relative_url"}, {"id": "high", "boost": 10}, {"id":  "medium", "boost":  5}],
+  "path_boosts" : [{ "8" : ["*.html"]}],
+  "char_boosts" : [{ "time" : ["news/**/*.html"]}]
 }

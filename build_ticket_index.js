@@ -2,7 +2,7 @@
 // Based on the Lunr build process https://lunrjs.com/guides/index_prebuilding.html
 //
 // Assumes documents are at ./documents.json
-
+const OUTPUT_DIR = "./documents.json"
 const fs = require('fs')
 const lunr = require('lunr')
 
@@ -20,7 +20,7 @@ let index_output = args.index_output
 // Read in the documents that compose the content to be indexed
 let documents = []
 try {
-    documents = JSON.parse(fs.readFileSync("./documents.json", 'utf8'))
+    documents = JSON.parse(fs.readFileSync(OUTPUT_DIR, 'utf8'))
 } catch (err) {
     console.error(err)
 }
@@ -37,7 +37,7 @@ let idx = lunr(function () {
     }, this)
 
     documents.forEach(function (doc) {
-        this.add(doc)
+        this.add(doc.document, doc.boost)
     }, this)
 })
 
