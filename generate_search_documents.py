@@ -211,7 +211,6 @@ def get_stats(search):
     print(f"Average Document Boost: {sum(doc_boosts) / len(doc_boosts)}")
 
 
-
 def main():
     """
     Open the args file and begin the generation
@@ -224,11 +223,20 @@ def main():
         args = json.load(fp)
 
     site_root_dir = args["site_root"]
-    path_boost_directory = get_path_boosts_directory(args['path_boosts'])
-    character_boost_directory = get_char_boosts_directory(args['char_boosts'])
 
-    exclude_paths = args["exclude_paths"]
-    key_tags = args["key_tags"]
+    if "path_boosts" in args:
+        path_boost_directory = get_path_boosts_directory(args['path_boosts'])
+
+    if "char_boosts" in args:
+        character_boost_directory = get_char_boosts_directory(args['char_boosts'])
+
+    exclude_paths = []
+    if "exclude_paths" in args:
+        exclude_paths = args["exclude_paths"]
+
+    key_tags = []
+    if "key_tags" in args:
+        key_tags = args["key_tags"]
 
     search_json = generate_search_json(exclude_paths, key_tags)
 

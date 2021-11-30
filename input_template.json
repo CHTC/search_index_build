@@ -1,11 +1,11 @@
 {
   "site_root" : "/Users/clock/WebstormProjects/htcondor-web/_site",
-  "exclude_paths" : [""],
-  "meta_data_output": "./throw-away",
-  "index_output": "./throw-away_index",
+  "exclude_paths" : ["wiki-archive/pages/*/*.html", "slides/**/*.html"],
+  "meta_data_output": "main_metadata.json",
+  "index_output": "main_index.json",
   "key_tags" : [{"high" : ["h1", "h2", "h3", "h4", "h5"]}, {"medium" : ["b", "code", "pre"]}],
   "ref" : "root_relative_url",
   "fields" : [{"id": "root_relative_url"}, {"id": "high", "boost": 10}, {"id":  "medium", "boost":  5}],
-  "path_boosts" : [{ "8" : ["*.html"]}],
+  "path_boosts" : [{ "8" : ["*.html"]}, { "2" : ["yum/**"]}],
   "char_boosts" : [{ "time" : ["news/**/*.html"]}]
 }

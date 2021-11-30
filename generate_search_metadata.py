@@ -77,7 +77,11 @@ def main():
         args = json.load(fp)
 
     site_root = args["site_root"]
-    exclude_paths = args["exclude_paths"]
+
+    exclude_paths = []
+    if "exclude_paths" in args:
+        exclude_paths = args["exclude_paths"]
+
     output_dir = args["meta_data_output"]
 
     generate_search_metadata(site_root, output_dir, exclude_paths)
