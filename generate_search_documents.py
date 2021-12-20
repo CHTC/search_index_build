@@ -202,7 +202,7 @@ def generate_search_json(exclude_paths: list, key_tags: list, file_terms: dict):
             if re.search(file, document['root_relative_url']) is not None:
                 document["file_terms"] = terms
             else:
-                document["file_terms"] = None
+                document["file_terms"] = ""
 
     boosted_documents = [{'document': document, 'boost': get_document_boost(document)} for document in documents]
     search = boosted_documents
