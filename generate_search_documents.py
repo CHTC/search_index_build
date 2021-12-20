@@ -5,7 +5,7 @@ from util import path_to_soup, get_valid_paths, get_root_relative_url, string_to
 import sys
 import glob
 import datetime
-
+import re
 
 site_root_dir = ""
 path_boost_directory = {}
@@ -34,7 +34,6 @@ def path_to_soup_ext(path):
 
 
 def expand_glob_list(glob_paths: list) -> set:
-
     paths = set()
     for glob_path in glob_paths:
         paths.update(glob.glob(f"{site_root_dir}/{glob_path}"))
@@ -43,7 +42,6 @@ def expand_glob_list(glob_paths: list) -> set:
 
 
 def get_char_boosts_directory(char_boosts_globs: dict) -> dict:
-
     global site_root_dir
 
     char_boosts = {}
@@ -99,7 +97,7 @@ def get_time_document_boost(document: dict):
     :return: The boost int
     """
 
-    def sigmoid( z ):
+    def sigmoid(z):
         return 1 / (1 + math.e ** (z * -1))
 
     if not document['date']:
@@ -110,7 +108,7 @@ def get_time_document_boost(document: dict):
 
     z = document_year - current_year + 1
 
-    boost = math.ceil(sigmoid(z)*10)
+    boost = math.ceil(sigmoid(z) * 10)
 
     return boost
 
@@ -182,13 +180,12 @@ def soup_to_dict(soup: BeautifulSoup, key_tags: list) -> dict:
     return page
 
 
-def generate_search_json(exclude_paths: list, key_tags: list):
+def generate_search_json(exclude_paths: list, key_tags: list, file_terms: dict):
     """
     Generates the json file to be indexed by lunr.js
-    :param output_dir: Where the output json should be put
-    :param site_root_dir: The root of the generated site
     :param exclude_paths: Paths to exclude based on glob syntax
     :param key_tags: The html tags that should be extracted as separate components ( useful for search emphasis )
+    :param file_terms: List of dicts of form {"file_path" : "term0 term1 term2"}
     :return: Json file ready to be indexed
     """
 
@@ -197,6 +194,16 @@ def generate_search_json(exclude_paths: list, key_tags: list):
 
     soups = [path_to_soup_ext(path) for path in valid_paths]
     documents = [soup_to_dict(soup, key_tags) for soup in soups]
+
+    # Add the user defined documents
+    for document in documents:
+
+        for file, terms in file_terms.items():
+            if re.search(file, document['root_relative_url']) is not None:
+                document["file_terms"] = terms
+            else:
+                document["file_terms"] = None
+
     boosted_documents = [{'document': document, 'boost': get_document_boost(document)} for document in documents]
     search = boosted_documents
     search_json = json.dumps(boosted_documents)
@@ -238,7 +245,11 @@ def main():
     if "key_tags" in args:
         key_tags = args["key_tags"]
 
-    search_json = generate_search_json(exclude_paths, key_tags)
+    file_terms = []
+    if "file_terms" in args:
+        file_terms = args["file_terms"]
+
+    search_json = generate_search_json(exclude_paths, key_tags, file_terms)
 
     get_stats(search_json)
 
