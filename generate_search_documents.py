@@ -198,11 +198,11 @@ def generate_search_json(exclude_paths: list, key_tags: list, file_terms: dict):
     # Add the user defined documents
     for document in documents:
 
+        document["file_terms"] = ""
         for file, terms in file_terms.items():
+
             if re.search(file, document['root_relative_url']) is not None:
-                document["file_terms"] = terms
-            else:
-                document["file_terms"] = ""
+                document["file_terms"] += f" {terms}"
 
     boosted_documents = [{'document': document, 'boost': get_document_boost(document)} for document in documents]
     search = boosted_documents
