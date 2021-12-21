@@ -6,6 +6,7 @@ import sys
 import glob
 import datetime
 import re
+import os
 
 site_root_dir = ""
 path_boost_directory = {}
@@ -56,7 +57,7 @@ def get_path_boosts_directory(doc_boosts_globs: dict) -> dict:
     """
     Expands the glob paths in a dict of form  into sets
     so that a docs boost value can be queried
-    :param doc_boosts: dict of form {<boost int>: ["glob_path"], <boost int>:["glob_path"]}
+    :param doc_boosts: dict of form {<boost int>: ["glob_path", "glob_path"], <boost int>:["glob_path"]}
     :return: dict of form {<boost int>: set("/root/**expanded_path**)}
     """
     global site_root_dir
@@ -80,7 +81,7 @@ def get_explicit_document_boost(doc: dict):
 
     boost_matches = []
     for key, paths in path_boost_directory.items():
-        if doc['path'] in paths:
+        if sum(os.path.samefile(path, doc['path']) for path in paths):
             boost_matches.append(int(key))
 
     if boost_matches:
